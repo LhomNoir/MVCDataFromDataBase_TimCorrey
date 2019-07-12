@@ -18,5 +18,10 @@ namespace DataLibrary.Factories
         {
             return new List<IEmployeeModel>();
         }
+
+        public static void Delete()
+        {
+
+        }
     }
 }

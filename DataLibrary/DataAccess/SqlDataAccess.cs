@@ -37,7 +37,13 @@ namespace DataLibrary.DataAccess
             }
         }
        
-        ///
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlQuery"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static int SaveData<T>(string sqlQuery, T data)
         {
             using (IDbConnection dbConnection = new SqlConnection(GetConnectionString()))
@@ -46,6 +52,60 @@ namespace DataLibrary.DataAccess
             }
         }
 
+
+        ///
+        public static bool SelectOneData<T>(string sqlQuery, int id)
+        {
+            using (IDbConnection dbConnection = new SqlConnection(GetConnectionString()))
+            {
+                var exist = dbConnection.Query<bool>(sqlQuery, new { EmployeId = id });
+                var val = exist.FirstOrDefault();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlQuery"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static int DeleteData<T>(string sqlQuery, int id)
+        {
+            using (IDbConnection dbConnection = new SqlConnection(GetConnectionString()))
+            {
+                return dbConnection.Execute(sqlQuery, new { EmployeId = id });
+            }
+        }
+
+        #region -- TEST DELETE METHODE !!!!!!!!!!!! --
+        public static int Delete<T>(string sqlQuery, int id)
+        {
+            using (IDbConnection dbConnection = new SqlConnection(GetConnectionString()))
+            {
+                return 0;
+            }
+        }
+
+        public static int Delete<T>(string sqlQuery, T entityToDelete)
+        {
+            return 0;
+        }
+
+        public static int DeleteList<T>(string sqlQuery, object whereConditions, 
+            IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            return 0;
+        }
+
+        public static int DeleteList<T>(string sqlQuery, string conditions, 
+            object parameters = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            return 0;
+        }
+        #endregion
+        
         #region ---   ---
         // your data table
         private static DataTable dataTable = new DataTable();
@@ -117,8 +177,9 @@ namespace DataLibrary.DataAccess
                     {
                         bulkCopy.WriteToServer(employeeModel.AsDataTable());
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
+                        Console.WriteLine(exception.ToString());
                         transaction.Rollback();
                         connection.Close();
                     }

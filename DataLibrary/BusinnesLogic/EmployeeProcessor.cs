@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DataLibrary.Helpers;
 using DataLibrary.Factories;
 using NLog;
+using Dapper;
 
 namespace DataLibrary.BusinnesLogic
 {
@@ -76,11 +77,46 @@ namespace DataLibrary.BusinnesLogic
             employees.AddRange(employeeList);
 
             //// -- Call Insert employee datatable to insert list of employee --
-            //SqlDataAccess.InsertListOfObject("dbo.Employee", employeeList);
+            //SqlDataAccess.InsertListOfObject("dbo.Employee", employeeList); 
 
             return employees;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="employeId"></param>
+        public static int DeleteEmploye(int employeId)
+        {
+            try
+            {
+                int result = 0;
 
+                // -- Check for existing data in DB --
+                //var sqlQuery = @"Select count(*) from dbo.Employee where EmployeeId = @EmployeeId;";
+                var sqlQuery = @"Select count(*) from dbo.Employee where EmployeeId = " + employeId  + ";";
+
+                //var param = new DynamicParameters();
+                //param.Add("@EmployeeId", employeId); 
+
+                var dataExist = SqlDataAccess.SelectOneData<IEmployeeModel>(sqlQuery, employeId);
+
+                if (dataExist)
+                {
+                    // --  --
+                    string sqlQuery2 = @"Delete from dbo.Employee where EmployeeId = @EmployeeId;";
+                    result = SqlDataAccess.DeleteData<IEmployeeModel>(sqlQuery2, employeId);
+                }
+
+                return result;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+                throw;
+            }
+        }
+
+       
     }
 }

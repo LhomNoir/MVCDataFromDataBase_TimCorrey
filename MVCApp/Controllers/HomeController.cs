@@ -8,6 +8,7 @@ using DataLibrary;
 using DataLibrary.BusinnesLogic;
 using MVCApp.Models.Intrefaces;
 using MVCApp.Factories;
+using System.Threading.Tasks;
 
 // special C# 7 using static DataLibray.BusinessLogic.EmployeeProcessor
 
@@ -60,14 +61,6 @@ namespace MVCApp.Controllers
                 employeModel.EmailAddress = item.EmailAddress;
                 
                 employees.Add(employeModel as EmployeeModel);
-
-                //employees.Add(new EmployeeModel
-                //{
-                //    EmployeeId = item.EmployeeId,
-                //    FirstName = item.FirstName,
-                //    LastName = item.LastName,
-                //    EmailAddress = item.EmailAddress
-                //});
             }
             #endregion
 
@@ -108,6 +101,30 @@ namespace MVCApp.Controllers
                 return RedirectToAction("ViewEmployees");
             }
 
+            return View();
+        }
+
+        public ActionResult Delete()
+        {
+            ViewBag.Message = "Employee à supprimer";
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Delete(EmployeeModel employee)
+        {
+            int id = 100002;
+
+            var result = EmployeeProcessor.DeleteEmploye(id);
+            if (result == 1)
+            {
+                Console.WriteLine("Correctely Deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Error during delete operation!");
+            }
             return View();
         }
     }
